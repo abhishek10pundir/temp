@@ -12,7 +12,7 @@ module.exports = function(app) {
 
   app.route('/login').post(login.add_tasks)
   app.route('/profile/:id').put(updateProfile.add_tasks)
-  app.route('po:id').get(updateProfile.get_tasks)
+  app.route('profile:id').get(updateProfile.get_tasks)
   app.route('/other-profile').post(updateProfile.get_other_tasks)
   app.route('/search/:keyword').get(search.search_tasks)
   app.route('/feeds').post(feeds.add_tasks)

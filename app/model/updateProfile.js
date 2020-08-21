@@ -175,24 +175,24 @@ updateProfile.getProfileData = async (req, result) => {
         rowsUser[0]['feeds'] = Feeds;
 
         // //get user's feed
-        // const getfeedsUser = "select * from feeds where user_id="+id;
-        // const rowsFeedsUser = await execute(getfeedsUser);
-        // if(rowsFeedsUser.length > 0){
-        //     var countLike = [];
-        //     for (var i = rowsFeedsUser.length - 1; i >= 0; i--) {
-        //         const getfeedsLikes = "select * from feeds_like where feed_id="+rowsFeedsUser[i].id+" and type=0";
-        //         const rowsFeedsLikes = await execute(getfeedsLikes);
-        //         for (var j = rowsFeedsLikes.length - 1; j >= 0; j--) {
-        //             countLike.push(rowsFeedsLikes.length);
-        //         }
-        //     }
-        //     rowsUser[0]['total_like'] = countLike.length;
-        // }else{
-        //     rowsUser[0]['total_like'] = 0;
-        // }     
+        const getfeedsUser = "select * from feeds where user_id="+id;
+        const rowsFeedsUser = await execute(getfeedsUser);
+        if(rowsFeedsUser.length > 0){
+            var countLike = [];
+            for (var i = rowsFeedsUser.length - 1; i >= 0; i--) {
+                const getfeedsLikes = "select * from feeds_like where feed_id="+rowsFeedsUser[i].id+" and type=0";
+                const rowsFeedsLikes = await execute(getfeedsLikes);
+                for (var j = rowsFeedsLikes.length - 1; j >= 0; j--) {
+                    countLike.push(rowsFeedsLikes.length);
+                }
+            }
+            rowsUser[0]['total_like'] = countLike.length;
+        }else{
+            rowsUser[0]['total_like'] = 0;
+        }     
 
-        //get total likes for profile user
-        let likeCountQuery="select count(*) from feeds_like where user_id=" + id + "and type=0";
+       
+     
         let likeCount=await execute(likeCountQuery);
         rowsUser[0]['total_like']=likeCount;
 
@@ -277,13 +277,26 @@ updateProfile.getOtherProfileData = async (req, result) => {
         var Feeds = rowsFeeds.length;
 
         //likes count functionality added
-        let likeCountQuery="select count(*) from feeds_like where user_id=" + other_user_id + "and type=0";
-        let likeCount=await execute(likeCountQuery);
+        const getfeedsUser = "select * from feeds where user_id="+other_user_id;
+        const rowsFeedsUser = await execute(getfeedsUser);
+        if(rowsFeedsUser.length > 0){
+            var countLike = [];
+            for (var i = rowsFeedsUser.length - 1; i >= 0; i--) {
+                const getfeedsLikes = "select * from feeds_like where feed_id="+rowsFeedsUser[i].id+" and type=0";
+                const rowsFeedsLikes = await execute(getfeedsLikes);
+                for (var j = rowsFeedsLikes.length - 1; j >= 0; j--) {
+                    countLike.push(rowsFeedsLikes.length);
+                }
+            }
+            rowsUser[0]['total_like'] = countLike.length;
+        }else{
+            rowsUser[0]['total_like'] = 0;
+        }   
 
         rowsOtherUser[0]['following'] = following;
         rowsOtherUser[0]['follower'] = follower;
         rowsOtherUser[0]['feeds'] = Feeds;
-        rowsOtherUser[0]['total_like']=likeCount; //send total likes for particular user
+   
 
     rowsOtherUser[0]['is_following'] = isfollowing;
 

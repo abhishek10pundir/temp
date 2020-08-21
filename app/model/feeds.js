@@ -344,7 +344,7 @@ feeds.deleteFeed = async (id,req,result) => {
 
 //get all feeds based upon media_type for (type=0 response =images) and for (type=1 response=videos)
 
-feeds.getallfeedsForImagesOrVideos = async (id,req,result) => {
+feeds.getallfeedsForImagesOrVideos = async (id,req,result) => { 
     const feedPerPage=5;   //at a time 5 feeds will be sent by api
     let offset=0;
     let currentPage=0;
@@ -367,7 +367,7 @@ feeds.getallfeedsForImagesOrVideos = async (id,req,result) => {
         return; 
     }
     //if request params has current page sent  
-    if(req.params.currentPage!=NULL){
+    if(req.params.currentPage!=null){
         currentPage=parseInt(req.params.currentPage);
         offset=currentPage*feedPerPage;
         nextPage=currentPage+1;
@@ -409,12 +409,12 @@ feeds.getallfeedsForImagesOrVideos = async (id,req,result) => {
             const getLastComment = "select feeds_comment.id,feeds_comment.user_id,feeds_comment.comment,user.name,user.profile_image from feeds_comment left join user on user.id=feeds_comment.user_id where feeds_comment.feed_id="+rowsFeeds[i].id+" order by feeds_comment.id desc limit 1";
             const rowsLastComment = await execute(getLastComment);
             // console.log(rowsLastComment[0])
-            rowsFeeds[i]['last_comment'] = [];
+            rowsFeeds[0]['last_comment'] = [];
 
             if(rowsLastComment.length==0){
-                rowsFeeds[i]['last_comment'] = null;
+                rowsFeeds[0]['last_comment'] = null;
             }else{
-                rowsFeeds[i]['last_comment'] = rowsLastComment[0];
+                rowsFeeds[0]['last_comment'] = rowsLastComment[0];
             }
        }
 
@@ -453,7 +453,7 @@ feeds.getuserfeedsForImagesOrVideos = async (id,req,result) => {
         return; 
     }
     //if request params has current page sent  
-    if(req.params.currentPage!=NULL){
+    if(req.params.currentPage!=null){
         currentPage=parseInt(req.params.currentPage);
         offset=currentPage*feedPerPage;
         nextPage=currentPage+1;
@@ -472,6 +472,12 @@ feeds.getuserfeedsForImagesOrVideos = async (id,req,result) => {
             const rowsFeedsLikesMe = await execute(getfeedsLikesMe);
             rowsFeeds[i]['is_user_like'] = rowsFeedsLikesMe.length;
 
+            //views for the feeds;
+            const getFeedsViewsQuery="SELECT count(*) FROM `views` WHERE feed_id="+rowsFeeds[i].id;
+            const feedsViewsCount=await execute(getFeedsViewsQuery);
+            rowsFeeds[i]['views']=feedsViewsCount;
+
+            
            const mediaQuery = 'SELECT * FROM feeds_media where feed_id = "' + rowsFeeds[i].id + '"';
            const sets = await execute(mediaQuery);
            rowsFeeds[i]['media'] = [];
@@ -486,12 +492,12 @@ feeds.getuserfeedsForImagesOrVideos = async (id,req,result) => {
        const getLastComment = "select feeds_comment.id,feeds_comment.user_id,feeds_comment.comment,user.name,user.profile_image from feeds_comment left join user on user.id=feeds_comment.user_id where feed_id="+id+" order by id desc limit 1";
        const rowsLastComment = await execute(getLastComment);
        // console.log(rowsLastComment[0])
-       rowsFeeds[i]['last_comment'] = [];
+       rowsFeeds[0]['last_comment'] = [];
 
        if(rowsLastComment.length==0){
-           rowsFeeds[i]['last_comment'] = null;
+           rowsFeeds[0]['last_comment'] = null;
        }else{
-           rowsFeeds[i]['last_comment'] = rowsLastComment[0];
+           rowsFeeds[0]['last_comment'] = rowsLastComment[0];
        }
        let data={
         rowsFeeds:rowsFeeds,
