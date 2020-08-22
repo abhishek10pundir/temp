@@ -403,6 +403,14 @@ feeds.getallfeedsForImagesOrVideos = async (id,req,result) => {
            const rowsFeedsCountByUser = await execute(countfeedsViewsByUser);
            rowsFeeds[i]['views'] = rowsFeedsCountByUser.length;
 
+           //check if user is following the owner user of particular post
+           const checkUserFollowingFeedOwnerQuery="select * from follow where user_id="+id+" and following_id="+rowsFeeds[i].user_id;
+           const checkUserFollowingFeedOwner=await execute(checkUserFollowingFeedOwnerQuery);
+           if(checkUserFollowingFeedOwner.length==0){
+               rowsFeeds[i]['is_user_follow']='N';
+           }else{
+            rowsFeeds[i]['is_user_follow']='Y';
+           }
 
        }
        for (var i = rowsFeeds.length - 1; i >= 0; i--) {
@@ -473,9 +481,9 @@ feeds.getuserfeedsForImagesOrVideos = async (id,req,result) => {
             rowsFeeds[i]['is_user_like'] = rowsFeedsLikesMe.length;
 
             //views for the feeds;
-            const getFeedsViewsQuery="SELECT count(*) FROM `views` WHERE feed_id="+rowsFeeds[i].id;
-            const feedsViewsCount=await execute(getFeedsViewsQuery);
-            rowsFeeds[i]['views']=feedsViewsCount;
+            const countfeedsViewsByUser = "select * from views where feed_id="+rowsFeeds[i].id;
+            const rowsFeedsCountByUser = await execute(countfeedsViewsByUser);
+            rowsFeeds[i]['views'] = rowsFeedsCountByUser.length;
 
             
            const mediaQuery = 'SELECT * FROM feeds_media where feed_id = "' + rowsFeeds[i].id + '"';

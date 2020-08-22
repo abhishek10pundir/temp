@@ -288,9 +288,9 @@ updateProfile.getOtherProfileData = async (req, result) => {
                     countLike.push(rowsFeedsLikes.length);
                 }
             }
-            rowsUser[0]['total_like'] = countLike.length;
+            rowsOtherUser[0]['total_like'] = countLike.length;
         }else{
-            rowsUser[0]['total_like'] = 0;
+            rowsOtherUser[0]['total_like'] = 0;
         }   
 
         rowsOtherUser[0]['following'] = following;
